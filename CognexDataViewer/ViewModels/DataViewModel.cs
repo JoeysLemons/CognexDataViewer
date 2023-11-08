@@ -197,7 +197,6 @@ namespace CognexDataViewer.ViewModels
 
             }
         }
-
         #endregion        
 
         public List<Tag> GetDefaultTags()
@@ -215,19 +214,6 @@ namespace CognexDataViewer.ViewModels
         {
             return DatabaseUtils.GetCameraIdByName(cameraName);
         }
-
-        //public static List<TimestampGroupedTags> GroupAndOrderListByTimestamp(List<Tag> inputList)
-        //{
-        //    return inputList.GroupBy(tag => tag.Timestamp)
-        //                    .OrderBy(group => group.Key)
-        //                    .Select(group => new TimestampGroupedTags
-        //                    {
-        //                        Timestamp = group.Key,
-        //                        Items = group.ToList()
-        //                    })
-        //                    .ToList();
-        //}
-
 
         public static DataTable PopulateTable(List<Tag> tags)
         {

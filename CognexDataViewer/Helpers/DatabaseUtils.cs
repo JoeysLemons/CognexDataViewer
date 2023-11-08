@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Xml.Linq;
 
 namespace CognexDataViewer.Helpers
 {
@@ -461,5 +462,10 @@ namespace CognexDataViewer.Helpers
                 }
             }
         }
+
+        //public static int GetAssociatedImageFromTimestamp(DateTime timestamp)
+        //{
+            
+        //}
     }
 }

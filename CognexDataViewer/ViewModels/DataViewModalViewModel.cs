@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,15 +18,9 @@ namespace CognexDataViewer.ViewModels
     {
 		public DataViewModalViewModel(DataTable displayTable, int selectedIndex) 
 		{
+			SelectedIndex = selectedIndex;
 			_displayTable = displayTable;
-			title = "Test Title";
-			for (int i = 0; i < _displayTable.Columns.Count; i++)
-			{
-				string header = _displayTable.Columns[i].ToString();
-				DataRow row = _displayTable.Rows[selectedIndex];
-				string currentMeasurement = row.ItemArray[i].ToString();
-				Measurements.Add(new TagMeasurement() { Name = header, Value = currentMeasurement });
-			}
+			GetMeasurements();
 		}
 
 		private Tag selectedTag;
@@ -36,7 +31,14 @@ namespace CognexDataViewer.ViewModels
 			set { selectedTag = value; }
 		}
 
+		public int SelectedIndex { get; set; }
+
 		private DataTable _displayTable;
+		public DataTable DisplayTable 
+		{
+			get {return _displayTable; } 
+			set { _displayTable = value; } 
+		}
 
 		public ObservableCollection<TagMeasurement> Measurements { get; set; } = new ObservableCollection<TagMeasurement>();
 
@@ -50,12 +52,33 @@ namespace CognexDataViewer.ViewModels
 		private string title;
 
 		[RelayCommand]
-		public void Close(object sender) 
+		public void NextSelection()
 		{
-			this.Close(sender);
+			SelectedIndex += 1;
+			Trace.WriteLine($"Incrementing modal selected index... New Index: {SelectedIndex}");
+			GetMeasurements();
+		}
+		[RelayCommand]
+		public void PrevSelection()
+		{
+			SelectedIndex -= 1;
+			Trace.WriteLine($"Decrementing modal selected index... New Index: {SelectedIndex}");
+			GetMeasurements();
 		}
 
 
+		public void GetMeasurements() 
+		{
+            title = "Test Title";
+			Measurements.Clear();
+            for (int i = 0; i < DisplayTable.Columns.Count; i++)
+            {
+                string header = DisplayTable.Columns[i].ToString();
+                DataRow row = DisplayTable.Rows[SelectedIndex];
+                string currentMeasurement = row.ItemArray[i].ToString();
+                Measurements.Add(new TagMeasurement() { Name = header, Value = currentMeasurement });
+            }
+        }
 
 	}
 }
