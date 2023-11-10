@@ -16,7 +16,7 @@ namespace CognexDataViewer.Helpers
 {
     public class DatabaseUtils
     {
-        public static string ConnectionString { get; set; } = @"Data Source=(localdb)\EdgeHistorian;Initial Catalog=EdgeHistorian;Integrated Security=True";
+        public static string ConnectionString { get; set; } = @"Server=localhost;Database=EdgeHistorian;Integrated Security=True";
 
         /// <summary>
         /// Tests the DB connection
@@ -463,9 +463,44 @@ namespace CognexDataViewer.Helpers
             }
         }
 
-        //public static int GetAssociatedImageFromTimestamp(DateTime timestamp)
-        //{
-            
-        //}
+        /// <summary>
+        /// Gets the image taken 
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        public static string GetAssociatedImage(DateTime timestamp, int tagId)
+        {
+            using (SqlConnection SqlConnection = new SqlConnection(ConnectionString))
+            {
+                SqlConnection.Open();
+                string queryString = @"SELECT Associated_Image FROM MonitoredTagValues WHERE Timestamp = @timestamp AND Tag_id = @tag_id";
+                using (SqlCommand command = new SqlCommand(queryString, SqlConnection))
+                {
+                    command.Parameters.AddWithValue("@timestamp", timestamp);
+                    command.Parameters.AddWithValue("@tag_id", tagId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        return reader.Read() ? reader.GetString(0) : string.Empty;
+                    }
+                }
+            }
+        }
+
+        public static int GetTagIdByName(string name)
+        {
+            using (SqlConnection SqlConnection = new SqlConnection(ConnectionString))
+            {
+                SqlConnection.Open();
+                string selectCameraByEndpoint = "SELECT id FROM MonitoredTags WHERE Name = @name";
+                using (SqlCommand command = new SqlCommand(selectCameraByEndpoint, SqlConnection))
+                {
+                    command.Parameters.AddWithValue("@name", name);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        return reader.Read() ? reader.GetInt32(0) : -1;
+                    }
+                }
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
+    WindowStyle="None"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -83,6 +84,16 @@ namespace CognexDataViewer.ViewModels
             set 
             { 
                 startTime = value;
+                try
+                {
+                    StartDateTime = DateTime.Parse($"{StartDate} {StartTime}");
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine("This is most likely being thrown from an incomplete time entry by a user. While user enters time if the time is not complete an error will arise. This is ok.");
+                    Trace.WriteLine(e);
+                }
+                
                 OnPropertyChanged();
             }
         }
@@ -99,6 +110,7 @@ namespace CognexDataViewer.ViewModels
                     startDate = value.Substring(0, indexOfSpace);
                 else
                     startDate = value;
+                StartDateTime = DateTime.Parse($"{StartDate} {StartTime}");
                 OnPropertyChanged();
             }
         }
@@ -109,8 +121,12 @@ namespace CognexDataViewer.ViewModels
         {
             get 
             {
-                startDateTime = DateTime.Parse($"{StartDate} {StartTime}");
                 return startDateTime; 
+            }
+            set
+            {
+                startDateTime = value;
+                OnPropertyChanged();
             }
         }
 
@@ -123,6 +139,15 @@ namespace CognexDataViewer.ViewModels
             set 
             {
                 endTime = value;
+                try
+                {
+                    EndDateTime = DateTime.Parse($"{EndDate} {EndTime}");
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine("This is most likely being thrown from an incomplete time entry by a user. While user enters time if the time is not complete an error will arise. This is ok.");
+                    Trace.WriteLine(e);
+                }
                 OnPropertyChanged();
             }
         }
@@ -139,6 +164,7 @@ namespace CognexDataViewer.ViewModels
                     endDate = value.Substring(0, indexOfSpace);
                 else
                     endDate = value;
+                EndDateTime = DateTime.Parse($"{EndDate} {EndTime}");
                 OnPropertyChanged();
             }
         }
@@ -149,8 +175,12 @@ namespace CognexDataViewer.ViewModels
         {
             get 
             {
-                endDateTime = DateTime.Parse($"{EndDate} {EndTime}");
                 return endDateTime;
+            }
+            set
+            {
+                endDateTime = value;
+                OnPropertyChanged();
             }
         }
 

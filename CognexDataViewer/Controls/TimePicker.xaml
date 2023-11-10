@@ -11,7 +11,7 @@
     mc:Ignorable="d">
     <Border
         Height="37"
-        Background="#484848"
+        Background="{DynamicResource ControlFillColorDefaultBrush}"
         CornerRadius="5">
         <Grid>
             <Grid.ColumnDefinitions>

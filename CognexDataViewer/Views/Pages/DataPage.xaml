@@ -16,7 +16,9 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    >
+    
 
     <ui:UiPage.Resources>
         <helpers:ListToStringConverter x:Key="ListToStringConverter" />
@@ -84,7 +86,7 @@
             Grid.Row="1"
             Padding="5"
             VerticalAlignment="Top"
-            Background="#3e3e3e"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
             CornerRadius="5">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <StackPanel Margin="0,0,50,0" Orientation="Vertical">
@@ -94,12 +96,26 @@
                         FontSize="18"
                         Text="{Binding ViewModel.SelectedCamera}" />
                 </StackPanel>
-                <StackPanel Orientation="Vertical">
+                <StackPanel Margin="0,0,50,0" Orientation="Vertical">
                     <Label Content="Job Name:" FontSize="14" />
                     <TextBlock
                         Margin="5,0,0,0"
                         FontSize="18"
                         Text="{Binding ViewModel.SelectedJob}" />
+                </StackPanel>
+                <StackPanel Margin="0,0,50,0" Orientation="Vertical">
+                    <Label Content="Start Time" FontSize="14"/>
+                    <TextBlock
+                        Margin="5 0 0 0"
+                        FontSize="18"
+                        Text="{Binding ViewModel.StartDateTime}"/>
+                </StackPanel>
+                <StackPanel Margin="0,0,50,0" Orientation="Vertical">
+                    <Label Content="End Time" FontSize="14"/>
+                    <TextBlock
+                        Margin="5 0 0 0"
+                        FontSize="18"
+                        Text="{Binding ViewModel.EndDateTime}"/>
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -111,7 +127,7 @@
             Height="auto"
             Margin="0,10"
             VerticalAlignment="Top"
-            AlternatingRowBackground="#484848"
+            AlternatingRowBackground="{DynamicResource ControlFillColorDefaultBrush}"
             AlternationCount="2"
             AutoGenerateColumns="true"
             CanUserReorderColumns="False"
@@ -126,7 +142,7 @@
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">
                     <Style.Triggers>
                         <Trigger Property="AlternationIndex" Value="0">
-                            <Setter Property="Background" Value="#3e3e3e" />
+                            <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush }" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>

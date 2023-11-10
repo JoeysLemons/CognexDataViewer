@@ -15,6 +15,7 @@
 
     <UserControl.Resources>
         <helpers:SvgToImageSourceConverter x:Key="SvgToImageSourceConverter" />
+        <helpers:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
 
@@ -36,20 +37,20 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="24"
-            Text="2052_09-26-2023 12_20_51.bmp" />
+            Text="{Binding Image}" />
 
         <!--  BMP Image  -->
         <Image
             Grid.Row="1"
             HorizontalAlignment="Center"
-            Source="{Binding Image}"
+            Source="{Binding ImagePath}"
             Stretch="Uniform" />
 
         <!--  SVG Image  -->
         <Image
             Grid.Row="1"
             HorizontalAlignment="Center"
-            Source="{Binding ImageOverlay, Converter={StaticResource SvgToImageSourceConverter}}" />
+            Source="{Binding ImageOverlayPath, Converter={StaticResource SvgToImageSourceConverter}}" />
 
         <ListBox
             Grid.Row="1"
