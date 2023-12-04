@@ -16,7 +16,7 @@ namespace CognexDataViewer.Helpers
 {
     public class DatabaseUtils
     {
-        public static string ConnectionString { get; set; } = @"Server=localhost;Database=EdgeHistorian;Integrated Security=True";
+        public static string ConnectionString { get; set; } = @"Data Source=(localdb)\EdgeHistorian;Initial Catalog=EdgeHistorian;Integrated Security=True";
 
         /// <summary>
         /// Tests the DB connection
@@ -91,10 +91,10 @@ namespace CognexDataViewer.Helpers
                 using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
                 {
                     sqlConnection.Open();
-                    string queryString = @"SELECT Name FROM MonitoredTags WHERE Job_id = @jobId";
+                    string queryString = @"SELECT Name FROM MonitoredTags WHERE Job_id = @_jobId";
                     using (SqlCommand command = new SqlCommand(queryString, sqlConnection))
                     {
-                        command.Parameters.AddWithValue("@jobId", jobId);
+                        command.Parameters.AddWithValue("@_jobId", jobId);
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -242,6 +242,48 @@ namespace CognexDataViewer.Helpers
             {
                 List<Tag> tags = new List<Tag>();
                 string query = @"SELECT Name, Id FROM MonitoredTags WHERE Job_id = @job_id";  // Fixed the query syntax here
+
+                using SqlConnection sqlConnection = new SqlConnection(ConnectionString);
+                sqlConnection.Open();
+
+                using SqlCommand command = new SqlCommand(query, sqlConnection);
+                command.Parameters.AddWithValue("@job_id", jobId);  // Added @ before job_id
+
+                using SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    try
+                    {
+                        string name = reader["Name"].ToString();
+                        int id = int.Parse(reader["Id"].ToString());
+
+                        Tag tag = new Tag(name) { Id = id };
+                        tags.Add(tag);
+                    }
+                    catch (NullReferenceException e)
+                    {
+                        Console.Write(e);
+                        throw;
+                    }
+                }
+
+                return tags;
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+
+        public static List<Tag> GetMonitoredTagsFromJob(int jobId)
+        {
+            try
+            {
+                List<Tag> tags = new List<Tag>();
+                string query = @"SELECT Name, Id FROM MonitoredTags WHERE Job_id = @job_id AND Monitored = 1";  // Fixed the query syntax here
 
                 using SqlConnection sqlConnection = new SqlConnection(ConnectionString);
                 sqlConnection.Open();
@@ -486,15 +528,16 @@ namespace CognexDataViewer.Helpers
             }
         }
 
-        public static int GetTagIdByName(string name)
+        public static int GetTagIdByName(string name, int jobId)
         {
             using (SqlConnection SqlConnection = new SqlConnection(ConnectionString))
             {
                 SqlConnection.Open();
-                string selectCameraByEndpoint = "SELECT id FROM MonitoredTags WHERE Name = @name";
+                string selectCameraByEndpoint = "SELECT id FROM MonitoredTags WHERE Name = @name AND Job_id = @jobId";
                 using (SqlCommand command = new SqlCommand(selectCameraByEndpoint, SqlConnection))
                 {
                     command.Parameters.AddWithValue("@name", name);
+                    command.Parameters.AddWithValue("@jobId", jobId);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         return reader.Read() ? reader.GetInt32(0) : -1;

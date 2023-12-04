@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -13,21 +14,31 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using CognexDataViewer.Helpers;
 using Wpf.Ui.Controls;
+using System.Windows.Input;
+using DataGrid = Wpf.Ui.Controls.DataGrid;
+using System.Windows.Data;
 
 namespace CognexDataViewer.ViewModels
 {
     public partial class DataViewModalViewModel: ObservableObject
     {
-		public DataViewModalViewModel(DataTable displayTable, int selectedIndex) 
+		public DataViewModalViewModel(DataTable displayTable, int selectedIndex, int jobId, string sortedColumnName, bool isSortAscending) 
 		{
+			MaxIndex = displayTable.Rows.Count - 1;
+            _jobId = jobId;
+            _displayTable = displayTable;
+			HideOverlay = false;
 			SelectedIndex = selectedIndex;
-			_displayTable = displayTable;
-			imagePath = ImageDirectory + Image;
-			imageOverlayPath = ImageDirectory + ImageOverlay;
-			GetMeasurements();
-		}
+			//SortedDisplayTable = CollectionViewSource.GetDefaultView(displayTable.DefaultView);
+			//SortedDisplayTable.SortDescriptions.Clear();
+			ListSortDirection direction = isSortAscending ? ListSortDirection.Ascending : ListSortDirection.Descending;
+			//SortedDisplayTable.SortDescriptions.Add(new SortDescription(sortedColumnName, direction));
 
-		private Tag selectedTag;
+			//SortedDisplayTable.Refresh();
+		}
+        #region Properties
+
+        private Tag selectedTag;
 
 		public Tag SelectedTag
 		{
@@ -35,7 +46,30 @@ namespace CognexDataViewer.ViewModels
 			set { selectedTag = value; }
 		}
 
-		private int SelectedIndex { get; set; }
+		public ICollectionView SortedDisplayTable { get; set; }
+
+		private int selectedIndex;
+
+		public int SelectedIndex
+		{
+			get { return selectedIndex; }
+			set 
+			{
+				selectedIndex = value; 
+				GetNewImage();
+                GetMeasurements();
+                OnPropertyChanged();
+			}
+		}
+
+		private int _jobId;
+
+		public int JobId
+		{
+			get { return _jobId; }
+			set { _jobId = value; }
+		}
+
 
 		private DataTable _displayTable;
 		public DataTable DisplayTable 
@@ -45,8 +79,10 @@ namespace CognexDataViewer.ViewModels
 		}
 
 		private string ImageDirectory { get; set; } = "C:\\Users\\jverstraete\\Desktop\\JunkChest\\Cognex\\FTP\\";
+        #endregion
 
-		private ObservableCollection<TagMeasurement> Measurements { get; set; } = new ObservableCollection<TagMeasurement>();
+        #region ObservableProperties
+        public ObservableCollection<TagMeasurement> Measurements { get; set; } = new ObservableCollection<TagMeasurement>();
 
 		[ObservableProperty] private string image = $"2052_09-26-2023 12_20_51.bmp";
 
@@ -58,20 +94,31 @@ namespace CognexDataViewer.ViewModels
 
         [ObservableProperty] private string title;
 
-		[RelayCommand]
+		[ObservableProperty] private bool hideOverlay;
+		
+		[ObservableProperty] private int maxIndex;
+        #endregion
+
+        #region RelayCommands
+        [RelayCommand]
 		private void NextSelection()
 		{
+			if (SelectedIndex == maxIndex)
+				return;
 			try
 			{
 				SelectedIndex += 1;
-				GetNewImage();
 				Trace.WriteLine($"Incrementing modal selected index... New Index: {SelectedIndex}");
-				GetMeasurements();
 			}
 			catch (InvalidOperationException e)
 			{
-				Console.WriteLine(e);
+				Trace.WriteLine(e);
 				ShowImageNotFound();	//Unimplemnted will eventually display the image not found image into the modal
+			}
+			catch (IndexOutOfRangeException e)
+			{
+				Trace.WriteLine($"IndexOutOfRange: {e.Message}");
+				ShowImageNotFound();
 			}
 			catch (Exception e)
 			{
@@ -83,12 +130,12 @@ namespace CognexDataViewer.ViewModels
 		[RelayCommand]
 		private void PrevSelection()
 		{
+			if (SelectedIndex == 0)
+				return;
 			try
 			{
 				SelectedIndex -= 1;
-				GetNewImage();
 				Trace.WriteLine($"Decrementing modal selected index... New Index: {SelectedIndex}");
-				GetMeasurements();
 			}
 			catch (InvalidOperationException e)
 			{
@@ -103,8 +150,10 @@ namespace CognexDataViewer.ViewModels
 			
 		}
 
+        #endregion
 
-		private void GetMeasurements() 
+        #region Methods
+        private void GetMeasurements() 
 		{
             title = "Test Title";
 			Measurements.Clear();
@@ -122,9 +171,7 @@ namespace CognexDataViewer.ViewModels
 			DataRow row = DisplayTable.Rows[SelectedIndex];
 			DateTime timestamp;
 			if (DateTime.TryParse(row[0].ToString(), out timestamp))
-			{
 				return timestamp;
-			}
 
 			throw new InvalidOperationException($"Failed to parse DateTime from row {SelectedIndex}. Possible missing timestamp.");
 		}
@@ -134,9 +181,7 @@ namespace CognexDataViewer.ViewModels
 			DataRow row = DisplayTable.Rows[index];
 			DateTime timestamp;
 			if (DateTime.TryParse(row[0].ToString(), out timestamp))
-			{
 				return timestamp;
-			}
 
 			throw new InvalidOperationException($"Failed to parse DateTime from row {index}. Possible missing timestamp.");
 		}
@@ -157,12 +202,20 @@ namespace CognexDataViewer.ViewModels
 		private void GetNewImage()
 		{
 			DateTime timestamp = GetTimestamp();
-			int tagId = DatabaseUtils.GetTagIdByName(DisplayTable.Columns[1].ToString());
-			Image = DatabaseUtils.GetAssociatedImage(timestamp, tagId);
+			int tagId = DatabaseUtils.GetTagIdByName(DisplayTable.Columns[1].ToString(), JobId);
+			Image = DatabaseUtils.GetAssociatedImage(timestamp, tagId) + ".bmp";
 			ImagePath = ImageDirectory + Image;
 			ImageOverlay = ChangeFileExtensionToSVG(Image);
 			ImageOverlayPath = ImageDirectory + ImageOverlay;
 		}
 
-	}
+        
+
+        public void GetSorting()
+		{
+			
+		}
+
+        #endregion
+    }
 }

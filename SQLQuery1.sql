@@ -1,0 +1,1 @@
+﻿SELECT * From MonitoredTagValues;

@@ -57,6 +57,8 @@ namespace CognexDataViewer.ViewModels
             }
         }
 
+        public string SortedColumnName { get; set; }
+        public bool IsSortAscending { get; set; }
         private readonly ISnackbarService _snackbarService;
 
         public List<string> HeaderNames = new List<string>();
@@ -110,7 +112,10 @@ namespace CognexDataViewer.ViewModels
                     startDate = value.Substring(0, indexOfSpace);
                 else
                     startDate = value;
-                StartDateTime = DateTime.Parse($"{StartDate} {StartTime}");
+                if (DateTime.TryParse($"{StartDate} {StartTime}", out DateTime result))
+                {
+                    StartDateTime = result;
+                }
                 OnPropertyChanged();
             }
         }
@@ -164,7 +169,10 @@ namespace CognexDataViewer.ViewModels
                     endDate = value.Substring(0, indexOfSpace);
                 else
                     endDate = value;
-                EndDateTime = DateTime.Parse($"{EndDate} {EndTime}");
+                if (DateTime.TryParse($"{EndDate} {EndTime}", out DateTime result))
+                {
+                    EndDateTime = result;
+                }
                 OnPropertyChanged();
             }
         }
@@ -205,12 +213,20 @@ namespace CognexDataViewer.ViewModels
         [RelayCommand]
         public void ApplyViewerChanges()
         {
-            int jobID = DatabaseUtils.GetJobId(SelectedJob);
-            DisplayTags = DatabaseUtils.GetTagsFromJob(jobID);
-
             try
             {
+                if (startDateTime > endDateTime)
+                    throw new ArgumentException("The start date must be earlier than the end date.");
+                int jobID = DatabaseUtils.GetJobId(SelectedJob);
+                DisplayTags = DatabaseUtils.GetMonitoredTagsFromJob(jobID);
+
+            
                 DisplayTags = DatabaseUtils.GetTagMeasurements(DisplayTags, StartDateTime, EndDateTime);
+            }
+            catch (ArgumentException e)
+            {
+                DisplayTags = DatabaseUtils.GetTagMeasurements(DisplayTags);
+                ErrorMessage = e.Message;
             }
             catch (Exception e)
             {

@@ -24,7 +24,6 @@ namespace CognexDataViewer.Views.UserControls
         public DataViewModal(ViewModels.DataViewModalViewModel viewModel)
         {
             ViewModel = viewModel;
-            DataContext = viewModel;
             InitializeComponent();
         }
     }

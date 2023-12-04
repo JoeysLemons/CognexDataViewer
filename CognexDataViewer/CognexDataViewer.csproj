@@ -6,12 +6,12 @@
     <Nullable>enable</Nullable>
     <LangVersion>10.0</LangVersion>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>VisionDataPulseIconTemp.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="applicationIcon.ico" />
+    <Content Include="VisionDataPulseIconTemp.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,12 +24,10 @@
 
   <ItemGroup>
     <None Remove="Assets\applicationIcon-1024.png" />
-    <None Remove="Assets\applicationIcon-256.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\applicationIcon-1024.png" />
-    <Resource Include="Assets\applicationIcon-256.png" />
   </ItemGroup>
 
 </Project>

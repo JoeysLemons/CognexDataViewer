@@ -133,9 +133,11 @@
             CanUserReorderColumns="False"
             IsReadOnly="True"
             ItemsSource="{Binding ViewModel.DisplayTable}"
+            Sorting="DataGrid_Sorting"
             MouseRightButtonUp="DataGrid_MouseRightButtonUp"
             ScrollViewer.HorizontalScrollBarVisibility="auto"
             ScrollViewer.VerticalScrollBarVisibility="auto"
+            
             SelectionChanged="DataGrid_SelectionChanged"
             SelectionMode="Single">
             <DataGrid.RowStyle>

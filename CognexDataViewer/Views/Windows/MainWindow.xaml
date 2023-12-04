@@ -17,8 +17,8 @@
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
-    WindowStyle="None"
     WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -39,11 +39,11 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="42,0,0,0"
-            Icon="pack://application:,,,/Assets/applicationIcon-256.png">
+            Icon="C:\Users\jverstraete\source\repos\CognexDataViewer\CognexDataViewer\Assets\VisionDataPulseIcon.png">
             <ui:TitleBar.Tray>
                 <ui:NotifyIcon
                     FocusOnLeftClick="True"
-                    Icon="pack://application:,,,/Assets/applicationIcon-256.png"
+                    Icon="C:\Users\jverstraete\source\repos\CognexDataViewer\CognexDataViewer\Assets\VisionDataPulseIcon.png"
                     MenuOnRightClick="True"
                     TooltipText="CognexDataViewer">
                     <ui:NotifyIcon.Menu>

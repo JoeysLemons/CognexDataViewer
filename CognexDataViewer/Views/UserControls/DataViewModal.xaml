@@ -11,18 +11,21 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    Background="{DynamicResource ApplicationBackgroundBrush}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <helpers:SvgToImageSourceConverter x:Key="SvgToImageSourceConverter" />
-        <helpers:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <helpers:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <helpers:BooleanToVisibilityConverterInverse x:Key="BooleanToVisibilityConverterInverse" />
     </UserControl.Resources>
 
 
 
     <Grid Background="#3e3e3e">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -32,8 +35,9 @@
         </Grid.RowDefinitions>
 
 
-
+        <ui:TitleBar Grid.ColumnSpan="4" />
         <TextBlock
+            Grid.Column="0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="24"
@@ -41,7 +45,10 @@
 
         <!--  BMP Image  -->
         <Image
+            x:Name="bmpImage"
             Grid.Row="1"
+            Grid.Column="0"
+            Margin="30"
             HorizontalAlignment="Center"
             Source="{Binding ImagePath}"
             Stretch="Uniform" />
@@ -49,43 +56,63 @@
         <!--  SVG Image  -->
         <Image
             Grid.Row="1"
+            Grid.Column="0"
+            Margin="30"
             HorizontalAlignment="Center"
-            Source="{Binding ImageOverlayPath, Converter={StaticResource SvgToImageSourceConverter}}" />
+            Source="{Binding ImageOverlayPath, Converter={StaticResource SvgToImageSourceConverter}}"
+            Stretch="Uniform"
+            Visibility="{Binding HideOverlay, Converter={StaticResource BooleanToVisibilityConverterInverse}}" />
 
-        <ListBox
-            Grid.Row="1"
-            Grid.Column="1"
-            ItemsSource="{Binding Measurements}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                        <TextBlock Grid.Column="1" Text="{Binding Value}" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <StackPanel Grid.Row="1" Grid.Column="4">
+            <CheckBox
+                HorizontalAlignment="Left"
+                Content="Hide Overlay"
+                IsChecked="{Binding HideOverlay}" />
+            <ListBox ItemsSource="{Binding Measurements}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Value}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
 
         <StackPanel
             Grid.Row="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal">
-            <ui:Button
-                Margin="5,0"
+            Grid.Column="0"
+            Margin="5,10"
+            Orientation="Vertical">
+            <StackPanel
                 HorizontalAlignment="Center"
-                Command="{Binding PrevSelectionCommand}"
-                Icon="ArrowLeft24" />
-            <ui:Button
-                Margin="5,0"
-                HorizontalAlignment="Center"
-                Command="{Binding NextSelectionCommand}"
-                Icon="ArrowRight24" />
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <ui:Button
+                    Margin="5,0"
+                    HorizontalAlignment="Center"
+                    Command="{Binding PrevSelectionCommand}"
+                    Icon="ArrowLeft24" />
+                <ui:Button
+                    Margin="5,0"
+                    HorizontalAlignment="Center"
+                    Command="{Binding NextSelectionCommand}"
+                    Icon="ArrowRight24" />
+            </StackPanel>
+            <Slider
+                Width="150"
+                Margin="7"
+                Maximum="{Binding MaxIndex}"
+                Minimum="0"
+                Value="{Binding SelectedIndex}" />
         </StackPanel>
+
+
 
     </Grid>
 </UserControl>

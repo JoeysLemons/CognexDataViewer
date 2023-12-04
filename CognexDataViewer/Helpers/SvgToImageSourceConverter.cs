@@ -37,7 +37,10 @@ namespace CognexDataViewer.Helpers
                         // Create a new SVG file reader based on the file stream.
                         WpfDrawingSettings settings = new WpfDrawingSettings();
                         settings.IncludeRuntime = true;
-                        settings.TextAsGeometry = false; // Set it to true if you have text rendering issues
+                        settings.TextAsGeometry = true; // Set it to true if you have text rendering issues
+                        settings.EnsureViewboxSize = true;
+                        settings.EnsureViewboxPosition= true;
+                        settings.CanUseBitmap = true;
 
                         var reader = new FileSvgReader(settings);
                         DrawingGroup drawing = reader.Read(fileStream);

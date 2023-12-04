@@ -14,11 +14,13 @@ using Wpf.Ui.Controls;
 using MenuItem = System.Windows.Controls.MenuItem;
 using DataGrid = System.Windows.Controls.DataGrid;
 using System.Diagnostics;
+using CognexDataViewer.Helpers;
+using System.ComponentModel;
 
 namespace CognexDataViewer.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for DataView.xaml
+    /// Interaction logic for SortedDisplayTable.xaml
     /// </summary>
     public partial class DataPage : INavigableView<ViewModels.DataViewModel>
     {
@@ -62,6 +64,15 @@ namespace CognexDataViewer.Views.Pages
             JobSelectionDropDown.SelectedIndex = 0;
         }
 
+        public int GetColumnIndexByName(DataGrid grid, string columnName)
+        {
+            return grid.Columns
+                       .Select((column, index) => new { column.Header, index })
+                       .Where(x => x.Header.ToString() == columnName)
+                       .Select(x => x.index)
+                       .FirstOrDefault(-1); // Returns -1 if not found
+        }
+
 
         public DataPage(ViewModels.DataViewModel viewModel, ISnackbarService snackbarService)
         {
@@ -86,14 +97,36 @@ namespace CognexDataViewer.Views.Pages
             if (dataGrid == null)
                 return;
             var selectedIndex = dataGrid.SelectedIndex;
+            var sortDescriptions = dataGrid.Items.SortDescriptions;
+            if (selectedIndex < 0) return;
+            int jobId = DatabaseUtils.GetJobId(ViewModel.SelectedJob);
             Trace.WriteLine($"Selected Index: {selectedIndex}");
-            var modalViewModel = new ViewModels.DataViewModalViewModel(ViewModel.DisplayTable, selectedIndex);
+            var modalViewModel = new ViewModels.DataViewModalViewModel(ViewModel.DisplayTable, selectedIndex,jobId, ViewModel.SortedColumnName, ViewModel.IsSortAscending);
             DataViewModal modal = new DataViewModal(modalViewModel);
-            UiWindow window = new UiWindow();
-            window.Content = modal;
-            window.DataContext = modalViewModel;
-            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            UiWindow window = new UiWindow
+            {
+                Content = modal,
+                ExtendsContentIntoTitleBar= true,
+                DataContext= modalViewModel,
+                WindowStyle= WindowStyle.None,
+                WindowBackdropType=Wpf.Ui.Appearance.BackgroundType.Mica,
+                WindowStartupLocation= WindowStartupLocation.CenterScreen
+            };
             window.Show();
+            dataGrid.UnselectAll();
+        }
+
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            var column = e.Column;
+            var direction = column.SortDirection;
+
+            // Assuming ascending sort if no direction is set
+            bool isAscending = direction != ListSortDirection.Descending;
+
+            // Update your ViewModel's properties
+            ViewModel.SortedColumnName = column.Header.ToString();
+            ViewModel.IsSortAscending = isAscending;
         }
     }
 }
