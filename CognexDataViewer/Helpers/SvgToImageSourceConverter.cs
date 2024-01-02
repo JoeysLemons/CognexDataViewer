@@ -42,8 +42,23 @@ namespace CognexDataViewer.Helpers
                         settings.EnsureViewboxPosition= true;
                         settings.CanUseBitmap = true;
 
+                        Helpers.SvgReader helpReader = new Helpers.SvgReader();
+                        helpReader.LoadSvg(svgPath);
+                        var tags = helpReader.GetAllUniqueTags();
+                        try
+                        {
+                            helpReader.GetAttributeValueOfTag("svg", "viewBox");
+                        }
+                        catch (Exception ex)
+                        {
+                            helpReader.AddAttributeToTag("svg", "viewBox", "0 0 2448 2048");
+                            helpReader.SaveSVG(svgPath);
+                        }
+
                         var reader = new FileSvgReader(settings);
                         DrawingGroup drawing = reader.Read(fileStream);
+
+                        
 
                         if (drawing != null)
                         {

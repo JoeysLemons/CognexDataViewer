@@ -43,25 +43,44 @@
             FontSize="24"
             Text="{Binding Image}" />
 
-        <!--  BMP Image  -->
-        <Image
-            x:Name="bmpImage"
-            Grid.Row="1"
-            Grid.Column="0"
-            Margin="30"
-            HorizontalAlignment="Center"
-            Source="{Binding ImagePath}"
-            Stretch="Uniform" />
 
-        <!--  SVG Image  -->
-        <Image
+
+
+        <Viewbox
             Grid.Row="1"
             Grid.Column="0"
-            Margin="30"
-            HorizontalAlignment="Center"
-            Source="{Binding ImageOverlayPath, Converter={StaticResource SvgToImageSourceConverter}}"
-            Stretch="Uniform"
-            Visibility="{Binding HideOverlay, Converter={StaticResource BooleanToVisibilityConverterInverse}}" />
+            Margin="30">
+            <Canvas Width="{Binding ActualWidth, ElementName=svgImage}" Height="{Binding ActualHeight, ElementName=svgImage}">
+                <!--  BMP Image  -->
+                <Image
+                    x:Name="bmpImage"
+                    Canvas.Top="370"
+                    HorizontalAlignment="Center"
+                    Source="{Binding ImagePath}"
+                    Stretch="Uniform" 
+                    Loaded="bmpImage_Loaded"/>
+                <!--  SVG Image  -->
+                <Image
+                    x:Name="svgImage"
+                    HorizontalAlignment="Center"
+                    Source="{Binding ImageOverlayPath, Converter={StaticResource SvgToImageSourceConverter}}"
+                    Stretch="Uniform"
+                    Visibility="{Binding HideOverlay, Converter={StaticResource BooleanToVisibilityConverterInverse}}" />
+            </Canvas>
+        </Viewbox>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <StackPanel Grid.Row="1" Grid.Column="4">
             <CheckBox

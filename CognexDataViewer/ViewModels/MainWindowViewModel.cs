@@ -38,13 +38,6 @@ namespace CognexDataViewer.ViewModels
             {
                 new NavigationItem()
                 {
-                    Content = "Home",
-                    PageTag = "dashboard",
-                    Icon = SymbolRegular.Home24,
-                    PageType = typeof(Views.Pages.DashboardPage)
-                },
-                new NavigationItem()
-                {
                     Content = "Data",
                     PageTag = "data",
                     Icon = SymbolRegular.DataHistogram24,

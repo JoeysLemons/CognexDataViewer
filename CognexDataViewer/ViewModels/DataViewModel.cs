@@ -231,7 +231,7 @@ namespace CognexDataViewer.ViewModels
             catch (Exception e)
             {
                 DisplayTags = DatabaseUtils.GetTagMeasurements(DisplayTags);
-                ErrorMessage = "Failed to parse start and end date time values. Please make sure that all boxes in the configuration section are filled out.";
+                //ErrorMessage = "Failed to parse start and end date time values. Please make sure that all boxes in the configuration section are filled out.";
             }
             DisplayTable = PopulateTable(DisplayTags);
         }
