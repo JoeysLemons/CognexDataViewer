@@ -5,11 +5,14 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.DirectoryServices;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -29,6 +32,7 @@ namespace CognexDataViewer.ViewModels
 
         [ObservableProperty]
         public List<string> jobList;
+        public string SortDirection { get; set; }
 
         private string selectedJob;
 
@@ -38,7 +42,7 @@ namespace CognexDataViewer.ViewModels
             set 
             { 
                 selectedJob = value;
-
+                DisplayTable.Clear();
                 OnPropertyChanged(nameof(SelectedJob));
             }
         }
@@ -52,6 +56,7 @@ namespace CognexDataViewer.ViewModels
             set 
             { 
                 selectedCamera = value;
+                DisplayTable.Clear();
                 JobList = PopulateJobDropdown();
                 OnPropertyChanged(nameof(SelectedCamera));
             }
@@ -251,7 +256,7 @@ namespace CognexDataViewer.ViewModels
             //DatabaseUtils.GetDefaultComputer(); //Commented out until Customer functionality is added to DB
             int cameraId = DatabaseUtils.GetDefaultCamera(10); //Hardcoding 10 for debug purposes eventually this value will come from the method above
             int jobId = DatabaseUtils.GetDefaultJob(cameraId);
-            tags = DatabaseUtils.GetTagsFromJob(jobId);
+            tags = DatabaseUtils.GetMonitoredTagsFromJob(jobId);
             tags = DatabaseUtils.GetTagMeasurements(tags);
             return tags;
         }

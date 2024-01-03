@@ -32,17 +32,32 @@ namespace CognexDataViewer.ViewModels
 
         private void InitializeViewModel()
         {
-            ApplicationTitle = "WPF UI - CognexDataViewer";
+            ApplicationTitle = "DataPulse";
 
             NavigationItems = new ObservableCollection<INavigationControl>
             {
                 new NavigationItem()
                 {
-                    Content = "Data",
+                    Content = "Data Browser",
                     PageTag = "data",
-                    Icon = SymbolRegular.DataHistogram24,
+                    Icon = SymbolRegular.BookSearch24,
+                    PageType = typeof(Views.Pages.DataPage)
+                },
+                new NavigationItem()
+                {
+                    Content = "Reports",
+                    PageTag = "reports",
+                    Icon = SymbolRegular.Notepad24,
+                    PageType = typeof(Views.Pages.DataPage)
+                },
+                new NavigationItem()
+                {
+                    Content = "Trends",
+                    PageTag = "trends",
+                    Icon = SymbolRegular.DataTrending24,
                     PageType = typeof(Views.Pages.DataPage)
                 }
+
             };
 
             NavigationFooter = new ObservableCollection<INavigationControl>

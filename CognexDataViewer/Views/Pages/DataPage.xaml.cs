@@ -101,7 +101,7 @@ namespace CognexDataViewer.Views.Pages
             if (selectedIndex < 0) return;
             int jobId = DatabaseUtils.GetJobId(ViewModel.SelectedJob);
             Trace.WriteLine($"Selected Index: {selectedIndex}");
-            var modalViewModel = new ViewModels.DataViewModalViewModel(ViewModel.DisplayTable, selectedIndex,jobId, ViewModel.SortedColumnName, ViewModel.IsSortAscending);
+            var modalViewModel = new ViewModels.DataViewModalViewModel(ViewModel.DisplayTable, selectedIndex,jobId, ViewModel.SortedColumnName, ViewModel.SortDirection);
             DataViewModal modal = new DataViewModal(modalViewModel);
             UiWindow window = new UiWindow
             {
@@ -120,13 +120,17 @@ namespace CognexDataViewer.Views.Pages
         {
             var column = e.Column;
             var direction = column.SortDirection;
-
             // Assuming ascending sort if no direction is set
             bool isAscending = direction != ListSortDirection.Descending;
 
             // Update your ViewModel's properties
             ViewModel.SortedColumnName = column.Header.ToString();
             ViewModel.IsSortAscending = isAscending;
+            if (direction != null)
+            {
+                ViewModel.SortDirection = column.SortDirection == ListSortDirection.Ascending ? "ASC" : "DESC";
+            }
+            
         }
     }
 }

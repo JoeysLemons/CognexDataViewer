@@ -9,9 +9,9 @@
     xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:Background="{DynamicResource ApplicationBackgroundBrush}"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    Background="{DynamicResource ApplicationBackgroundBrush}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -20,46 +20,46 @@
         <helpers:BooleanToVisibilityConverterInverse x:Key="BooleanToVisibilityConverterInverse" />
     </UserControl.Resources>
 
-
-
-    <Grid Background="#3e3e3e">
+    <Grid Background="{DynamicResource ControlFillColorDefaultBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="75" />
+            <RowDefinition Height="85" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="75" />
+            <RowDefinition Height="90" />
         </Grid.RowDefinitions>
 
-
         <ui:TitleBar Grid.ColumnSpan="4" />
-        <TextBlock
-            Grid.Column="0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="24"
-            Text="{Binding Image}" />
-
-
-
+        <StackPanel Grid.Column="0" Margin="40,20">
+            <TextBlock
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="18"
+                Text="{Binding Timestamp}" />
+            <TextBlock
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Text="{Binding Image}" />
+        </StackPanel>
 
         <Viewbox
+            x:Name="Viewbox"
             Grid.Row="1"
             Grid.Column="0"
-            Margin="30">
+            Margin="10">
             <Canvas Width="{Binding ActualWidth, ElementName=svgImage}" Height="{Binding ActualHeight, ElementName=svgImage}">
-                <!--  BMP Image  -->
                 <Image
                     x:Name="bmpImage"
                     Canvas.Top="370"
                     HorizontalAlignment="Center"
+                    ImageFailed="OnImageFailed"
+                    Loaded="bmpImage_Loaded"
                     Source="{Binding ImagePath}"
-                    Stretch="Uniform" 
-                    Loaded="bmpImage_Loaded"/>
-                <!--  SVG Image  -->
+                    Stretch="Uniform" />
                 <Image
                     x:Name="svgImage"
                     HorizontalAlignment="Center"
@@ -68,26 +68,21 @@
                     Visibility="{Binding HideOverlay, Converter={StaticResource BooleanToVisibilityConverterInverse}}" />
             </Canvas>
         </Viewbox>
+        <Image
+            Grid.Row="1"
+            Grid.Column="0"
+            Source="pack://application:,,,/Assets/ImageNotFound.bmp"
+            Visibility="{Binding ImageNotFound, Converter={StaticResource BooleanToVisibilityConverterInverse}}" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <StackPanel Grid.Row="1" Grid.Column="4">
-            <CheckBox
-                HorizontalAlignment="Left"
-                Content="Hide Overlay"
-                IsChecked="{Binding HideOverlay}" />
-            <ListBox ItemsSource="{Binding Measurements}">
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="4"
+            VerticalAlignment="Stretch">
+            <ListBox
+                Height="{Binding ElementName=Viewbox, Path=ActualHeight}"
+                Margin="10"
+                VerticalAlignment="Stretch"
+                ItemsSource="{Binding Measurements}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -95,12 +90,19 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                            <TextBlock Grid.Column="1" Text="{Binding Value}" />
+                            <TextBlock
+                                Grid.Column="0"
+                                FontWeight="Bold"
+                                Text="{Binding Name}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="5,0"
+                                Text="{Binding Value}" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
         </StackPanel>
 
         <StackPanel
@@ -117,6 +119,12 @@
                     HorizontalAlignment="Center"
                     Command="{Binding PrevSelectionCommand}"
                     Icon="ArrowLeft24" />
+                <CheckBox
+                    Grid.Row="2"
+                    Margin="15,10"
+                    HorizontalAlignment="Center"
+                    Content="Toggle Overlay"
+                    IsChecked="{Binding HideOverlay}" />
                 <ui:Button
                     Margin="5,0"
                     HorizontalAlignment="Center"
@@ -124,14 +132,11 @@
                     Icon="ArrowRight24" />
             </StackPanel>
             <Slider
-                Width="150"
-                Margin="7"
+                Width="285"
+                Margin="0"
                 Maximum="{Binding MaxIndex}"
                 Minimum="0"
                 Value="{Binding SelectedIndex}" />
         </StackPanel>
-
-
-
     </Grid>
 </UserControl>

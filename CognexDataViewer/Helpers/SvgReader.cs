@@ -99,8 +99,6 @@ namespace CognexDataViewer.Helpers
                         element.Attributes.Append(newAttr);
                     }
                 }
-                // Optionally, save the changes back to the SVG file or handle it externally
-                // svgDocument.Save("path_to_your_updated_svg_file.svg");
             }
         }
 

@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Wpf.Ui.Mvvm.Contracts;
 using Wpf.Ui.Mvvm.Services;
+using CognexDataViewer.Views.Windows;
 
 namespace CognexDataViewer
 {

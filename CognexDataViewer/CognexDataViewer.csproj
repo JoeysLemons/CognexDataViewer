@@ -24,10 +24,17 @@
 
   <ItemGroup>
     <None Remove="Assets\applicationIcon-1024.png" />
+    <None Remove="Assets\DataPulseSplash2.png" />
+    <None Remove="Assets\ImageNotFound.bmp" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\applicationIcon-1024.png" />
+    <Resource Include="Assets\ImageNotFound.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SplashScreen Include="Assets\DataPulseSplash2.png" />
   </ItemGroup>
 
 </Project>

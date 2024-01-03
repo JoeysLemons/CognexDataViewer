@@ -38,6 +38,12 @@ namespace CognexDataViewer.Views.UserControls
                 double horizontalOffset = Int32.Parse(Reader.GetAttributeValueOfTag("image", "x"));
                 double verticalOffset = Int32.Parse(Reader.GetAttributeValueOfTag("image", "y"));
                 string viewboxRaw = Reader.GetAttributeValueOfTag("svg", "viewBox");
+                if (viewboxRaw == null)
+                {
+                    Reader.AddAttributeToTag("svg", "viewBox", "0 0 2448 2048");
+                    Reader.SaveSVG(ViewModel.ImageOverlayPath);
+                    viewboxRaw = Reader.GetAttributeValueOfTag("svg", "viewBox");
+                }
                 List<string> viewboxOption = viewboxRaw.Split(" ").ToList();
 
                 double imageWidth = Int32.Parse(viewboxOption[2]);
@@ -59,6 +65,11 @@ namespace CognexDataViewer.Views.UserControls
         private void bmpImage_Loaded(object sender, RoutedEventArgs e)
         {
             PositionImage();
+        }
+
+        private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            bmpImage.Source = new BitmapImage(new Uri("/Assets/ImageNotFound.bmp"));
         }
 
     }
